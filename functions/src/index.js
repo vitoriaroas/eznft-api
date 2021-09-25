@@ -33,6 +33,20 @@ exports.getArtwork = (req, res) => {
     });
 };
 
+exports.getAllArtwork = (req, res) => {
+  const db = connectFirestore();
+  db.collection("artwork")
+    .get()
+    .then(collection => {
+      const artists = collection.docs.map(doc => {
+        let artist = doc.data();
+        artist.id = doc.id;
+        return artist;
+      })
+      res.send(artists);
+    });
+};
+
 exports.newUser = (req, res) => {
   const db = connectFirestore();
   db.collection("users")
