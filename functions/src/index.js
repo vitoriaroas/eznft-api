@@ -82,38 +82,38 @@ exports.newUser = (req, res) => {
 }
 
 exports.buyArtwork = (req, res) => {
-     const db = connectFirestore()
-     const { artId, userId } = JSON.parse(req.body)
-     // get artwork by id
-     db.collection('artwork')
-      .doc(artId)
+  const db = connectFirestore()
+  const { artId, userId } = JSON.parse(req.body)
+  // get artwork by id
+  db.collection('artwork')
+  .doc(artId)
+  .get()
+  .then(doc => {
+    let artwork = doc.data()
+    artwork.id = doc.id
+    // get user by id
+    db.collection('users')
+      .doc(userId)
       .get()
       .then(doc => {
-        let artwork = doc.data()
-        artwork.id = doc.id
-        // get user by id
-        db.collection('users')
-          .doc(userId)
-          .get()
-          .then(doc => {
-            let user = doc.data()
-            user.id = doc.id
-            // add user to artwork's collection
-            db.collection('artwork')
-              .doc(artId)
+        let user = doc.data()
+        user.id = doc.id
+        // add user to artwork's collection
+        db.collection('artwork')
+          .doc(artId)
+          .update({
+            buyers: admin.firestore.FieldValue.arrayUnion(user),
+          })
+          .then(() => {
+            // add artwork to user's collection
+            db.collection('users')
+              .doc(userId)
               .update({
-                buyers: admin.firestore.FieldValue.arrayUnion(user),
+                artworks: admin.firestore.FieldValue.arrayUnion(artwork),
               })
-              .then(() => {
-                // add artwork to user's collection
-                db.collection('users')
-                  .doc(userId)
-                  .update({
-                    artworks: admin.firestore.FieldValue.arrayUnion(artwork),
-                  })
-                  .then(() => res.send(artwork))
-              })
+              .then(() => res.send(artwork))
           })
       })
-      .catch(error => res.status(500).send('Error', + error.message))
+  })
+  .catch(error => res.status(500).send('Error', + error.message))
 }
