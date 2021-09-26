@@ -5,17 +5,6 @@ const { connectFirestore } = require("./firestore");
 exports.addArtwork = (req, res) => {
   const { price, location, description, quantity, art_name, image_url, artist_name, artist_id } = JSON.parse(req.body)
   if(!price || !location || !description || !quantity || !art_name || !image_url) {
-      console.log('-----------------------')
-      console.log(req.body)
-      console.log(typeof req.body)
-      console.log("price", !price)
-      console.log("price --> ", price)
-      console.log("location", !location)
-      console.log("description", !description)
-      console.log("quantity", !quantity)
-      console.log("art_name", !art_name)
-      console.log("image_url", !image_url)
-      console.log('-----------------------')
       res.status(401).send('Invalid request')
   }
   const db = connectFirestore();
@@ -68,9 +57,10 @@ exports.getAllArtwork = (req, res) => {
 
 exports.newUser = (req, res) => {
   const db = connectFirestore();
+  const new_user = JSON.parse(req.body)
   db.collection("users")
-    .doc(req.body.uid)
-    .set(req.body)
-    .then(() => res.send(req.body))
+    .doc(new_user.uid)
+    .set(new_user)
+    .then(() => res.send(new_user))
     .catch((error) => res.send("Error", +error.message));
 };
