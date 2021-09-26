@@ -6,6 +6,7 @@ const app = express()
 const { addArtwork, getArtwork, getAllArtwork, newUser } = require("./src/index")
 
 app.use(cors())
+app.use(express.json())
 
 app.get("/artwork/:artId", getArtwork)
 app.get("/artwork", getAllArtwork)

@@ -3,24 +3,35 @@ const admin = require("firebase-admin");
 const { connectFirestore } = require("./firestore");
 
 exports.addArtwork = (req, res) => {
-  if(!req.body || !req.body.price || !req.body.location || !req.body.description
-    || !req.body.quantity || !req.body.art_name || !req.body.image_url) {
+  const { price, location, description, quantity, art_name, image_url, artist_name, artist_id } = JSON.parse(req.body)
+  if(!price || !location || !description || !quantity || !art_name || !image_url) {
+      console.log('-----------------------')
+      console.log(req.body)
+      console.log(typeof req.body)
+      console.log("price", !price)
+      console.log("price --> ", price)
+      console.log("location", !location)
+      console.log("description", !description)
+      console.log("quantity", !quantity)
+      console.log("art_name", !art_name)
+      console.log("image_url", !image_url)
+      console.log('-----------------------')
       res.status(401).send('Invalid request')
-    }
+  }
   const db = connectFirestore();
   let newData = {
-    price: Number(req.body.price),
-    location: req.body.location,
-    description: req.body.description,
-    quantity: Number(req.body.quantity),
-    art_name: req.body.art_name,
-    image_url: req.body.image_url
+    price: Number(price),
+    location: location,
+    description: description,
+    quantity: Number(quantity),
+    art_name: art_name,
+    image_url: image_url
   };
-  if(req.body.artist_name) {
-    newData.artist_name = req.body.artist_name
+  if(artist_name) {
+    newData.artist_name = artist_name
   }
-  if(req.body.artist_id) {
-    newData.artist_id = req.body.artist_id
+  if(artist_id) {
+    newData.artist_id = artist_id
   }
   db.collection("artwork")
     .add(newData)
