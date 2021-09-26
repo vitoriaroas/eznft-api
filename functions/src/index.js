@@ -83,7 +83,7 @@ exports.newUser = (req, res) => {
 
 exports.buyArtwork = (req, res) => {
   const db = connectFirestore()
-  const { artId, userId } = JSON.parse(req.body)
+  const { artId, userId, nftId } = JSON.parse(req.body)
   // get artwork by id
   db.collection('artwork')
   .doc(artId)
@@ -91,6 +91,7 @@ exports.buyArtwork = (req, res) => {
   .then(doc => {
     let artwork = doc.data()
     artwork.id = doc.id
+    artwork.nftId = nftId
     // get user by id
     db.collection('users')
       .doc(userId)
@@ -98,6 +99,7 @@ exports.buyArtwork = (req, res) => {
       .then(doc => {
         let user = doc.data()
         user.id = doc.id
+        user.nftId = nftId
         // add user to artwork's collection
         db.collection('artwork')
           .doc(artId)
