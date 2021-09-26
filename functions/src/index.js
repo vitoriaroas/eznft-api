@@ -4,9 +4,7 @@ const { connectFirestore } = require("./firestore");
 
 exports.addArtwork = (req, res) => {
   const db = connectFirestore();
-  const newData = {
-    artist_name: req.body.artist_name || undefined,
-    artist_id: req.body.artist_id || undefined,
+  let newData = {
     price: Number(req.body.price),
     location: req.body.location,
     description: req.body.description,
@@ -14,6 +12,12 @@ exports.addArtwork = (req, res) => {
     art_name: req.body.art_name,
     image_url: req.body.image_url
   };
+  if(req.body.artist_name) {
+    newData.artist_name = req.body.artist_name
+  }
+  if(req.body.artist_id) {
+    newData.artist_id = req.body.artist_id
+  }
   db.collection("artwork")
     .add(newData)
     .then(() => this.getArtwork(req, res))
