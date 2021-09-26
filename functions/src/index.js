@@ -84,6 +84,7 @@ exports.newUser = (req, res) => {
 exports.buyArtwork = (req, res) => {
   const db = connectFirestore()
   const { artId, userId, nftId } = JSON.parse(req.body)
+  console.log({ artId, userId, nftId })
   // get artwork by id
   db.collection('artwork')
   .doc(artId)
@@ -92,6 +93,7 @@ exports.buyArtwork = (req, res) => {
     let artwork = doc.data()
     artwork.id = doc.id
     artwork.nftId = nftId
+    console.log('artwork --> ', artwork)
     // get user by id
     db.collection('users')
       .doc(userId)
@@ -100,6 +102,7 @@ exports.buyArtwork = (req, res) => {
         let user = doc.data()
         user.id = doc.id
         user.nftId = nftId
+        console.log('user --> ', user)
         // add user to artwork's collection
         db.collection('artwork')
           .doc(artId)
@@ -107,13 +110,17 @@ exports.buyArtwork = (req, res) => {
             buyers: admin.firestore.FieldValue.arrayUnion(user),
           })
           .then(() => {
+               console.log('updated artwork')
             // add artwork to user's collection
             db.collection('users')
               .doc(userId)
               .update({
                 artworks: admin.firestore.FieldValue.arrayUnion(artwork),
               })
-              .then(() => res.send(artwork))
+              .then(() => {
+                    console.log('updated user')
+                   res.send(artwork)
+               })
           })
       })
   })
