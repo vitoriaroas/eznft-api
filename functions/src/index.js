@@ -5,12 +5,12 @@ const { connectFirestore } = require("./firestore");
 exports.addArtwork = (req, res) => {
   const db = connectFirestore();
   const newData = {
-    artist_id: req.body.artist_id,
+    artist_name: req.body.artist_name || undefined,
+    artist_id: req.body.artist_id || undefined,
     price: Number(req.body.price),
     location: req.body.location,
     description: req.body.description,
     quantity: Number(req.body.quantity),
-    artist_name: req.body.artist_name,
     art_name: req.body.art_name,
     image_url: req.body.image_url
   };
