@@ -1,6 +1,0 @@
-[project]
-name = "eznft"
-requirements = []
-[contracts.eznft-artworks]
-path = "contracts/eznft-artworks.clar"
-depends_on = []
