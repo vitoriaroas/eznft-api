@@ -3,6 +3,10 @@ const admin = require("firebase-admin");
 const { connectFirestore } = require("./firestore");
 
 exports.addArtwork = (req, res) => {
+  if(!req.body || !req.body.price || !req.body.location || !req.body.description
+    || !req.body.quantity || !req.body.art_name || !req.body.image_url) {
+      res.status(401).send('Invalid request')
+    }
   const db = connectFirestore();
   let newData = {
     price: Number(req.body.price),
